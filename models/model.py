@@ -159,12 +159,6 @@ class CrossAttentionModel(nn.Module):
         # frame embeddings
         frame_embeddings = image_features.reshape(batch_length, -1, self.vision_embed_dim)
 
-        # ## compute cross attention between text tokens (query) and frame tokens (key, value)
-        # projected_frames_cls_token = frames_cls_token.reshape(batch_size, -1, self.vision_embed_dim)
-
-        # ca_token, _ = self.cross_attention(projected_token_per_dialogue, projected_frames_cls_token, projected_frames_cls_token)
-        # ca_token = ca_token.squeeze()
-
         ## compute cross attention between audio features (query) and frame features (key, value)
         ca_token, _ = self.cross_attention(audio_features, frame_embeddings, frame_embeddings)
         ca_token = ca_token.squeeze()
