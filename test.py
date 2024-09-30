@@ -14,7 +14,7 @@ def set_user_args():
     parser = argparse.ArgumentParser()
 
     # Required arguments
-    parser.add_argument('--checkpoint_file', default='model/checkpoints/best_model_fusion.pth', type=str, help='Full path to the checkpoint file to load. Include the file extension.')
+    parser.add_argument('--checkpoint_file', default='model/checkpoints/checkpoint_fusion_42_1lay.pth', type=str, help='Full path to the checkpoint file to load. Include the file extension.')
 
     # Optional arguments
     parser.add_argument('--device', default=None, type=str, help='Overrides the device argument in the loaded checkpoint')
