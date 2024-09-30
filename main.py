@@ -24,7 +24,7 @@ def set_args():
     parser.add_argument('--weight_decay', default=1e-4, type=float, help='weight decay for regularization')
     parser.add_argument('--warmup_proportion', default=0.1, type=float, help='warmup proportion for learning rate scheduler')
     parser.add_argument('--dropout_rate', default=0.3, type=float, help='dropout probability')
-    parser.add_argument('--loss_function', default='cross_entropy', type=str, help='choose between cross_entropy and custom')
+    parser.add_argument('--loss_function', default='cross_entropy', type=str, help='Warning: the custom loss function currently does not work correctly. Please use cross_entropy.')
     parser.add_argument('--custom_loss_ce_factor', default=1.0, type=float, help='Factor for the cross entropy part of the custom loss function. Only applicable if you are using the custom loss function.')
     parser.add_argument('--custom_loss_l2_factor', default=1.0, type=float, help='Factor for the MSE part of the custom loss function. Only applicable if you are using the custom loss function.')
     parser.add_argument('--balance_classes', default=False, type=bool, help='Choose True to optimize the model and calculate metrics per-class, choose False to do so globally, without balancing classes.')
