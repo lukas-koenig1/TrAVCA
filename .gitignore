@@ -1,0 +1,14 @@
+*.pyc
+/data/liris_accede/data/*.mp4
+/data/liris_accede/preprocessed/**/*.pt
+/data/liris_accede/audio_proxies/*.wav
+/wandb/
+/model/checkpoints/*.pth
+/pretrained_model/audio_clip/assets/*.pt
+/pretrained_model/audio_clip/assets/*.gz
+/logs/*.log
+/.ipynb_checkpoints
+/data/liris_accede/.ipynb_checkpoints
+/models/.ipynb_checkpoints
+/utils/.ipynb_checkpoints/
+/.Trash-0
