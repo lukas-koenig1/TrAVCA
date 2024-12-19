@@ -157,3 +157,13 @@ def calculate_metrics(args, targets, prob, num_labels):
     cm = wandb.plot.confusion_matrix(preds=y_pred, y_true=targets)
 
     return acc, valence_acc, arousal_acc, auc_ovr, auc_ovo, f1, precision, recall, cm
+
+
+def adjust_num_frames(frames, num_frames):
+    if frames.shape[0] < num_frames:
+        raise ValueError("Number of preprocessed frames is less than argument \'num_frames\'")
+    elif frames.shape[0] == num_frames:
+        return frames
+    else:
+        frame_idxs = torch.round(torch.linspace(0, frames.shape[0] - 1, num_frames)).int()
+        return frames[frame_idxs]

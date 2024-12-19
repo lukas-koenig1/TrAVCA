@@ -15,7 +15,7 @@ from transformers.utils.logging import set_verbosity_error
 
 from data.dataset import LirisAccedeDataset
 from utils.metrics import evaluate
-from utils.utils import calculate_metrics, calculate_weights
+from utils.utils import adjust_num_frames, calculate_metrics, calculate_weights
 from utils.processor import AudioCLIPProcessor
 from utils.early_stopping import EarlyStopping
 
@@ -152,7 +152,7 @@ def train(args, model, device):
             if args.model in ['cross_attention', 'fusion_audioclip']:
                 videos, audios, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1)
                 video_inputs = processor.preprocess_images(frames).to(device, non_blocking=True)
 
                 audio_inputs = processor.preprocess_audio(audios).to(device, non_blocking=True)
@@ -162,7 +162,7 @@ def train(args, model, device):
             elif args.model == 'fusion':
                 videos, audios, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1).to(device, non_blocking=True)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1).to(device, non_blocking=True)
 
                 audio_inputs = audio_processor(audios=audios, sampling_rate=48_000, return_tensors='pt').to(device)
                 video_inputs = vision_processor(images=frames, padding=True, truncation=True, return_tensors='pt').to(device)
@@ -177,7 +177,7 @@ def train(args, model, device):
             elif args.model == 'vision':
                 videos, _, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1).to(device, non_blocking=True)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1).to(device, non_blocking=True)
 
                 video_inputs = vision_processor(images=frames, padding=True, truncation=True, return_tensors='pt').to(device)
 

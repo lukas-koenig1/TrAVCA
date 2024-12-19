@@ -37,6 +37,7 @@ def set_args():
     parser.add_argument('--batch_size', default=16, type=int, help='batch size for training and testing')
     parser.add_argument('--num_heads_ca', default=8, type=int, help='number of heads for cross attention')
     parser.add_argument('--label_number', default=9, type=int, help='Number of classes')
+    parser.add_argument('--num_frames', default=16, type=int, help='') # TODO
 
     ## experiment
     parser.add_argument('--seed', default=42, type=int, help='random seed')
