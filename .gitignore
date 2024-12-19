@@ -2,6 +2,7 @@
 /data/liris_accede/data/*.mp4
 /data/liris_accede/preprocessed/**/*.pt
 /data/liris_accede/audio_proxies/*.wav
+/data/liris_accede/annotations/*.txt
 /wandb/
 /model/checkpoints/*.pth
 /pretrained_model/audio_clip/assets/*.pt
