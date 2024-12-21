@@ -90,7 +90,7 @@ docker build -t travca .
 To create a container from this image, use the following command:
 
 ```
-docker run --gpus all --shm-size=4gb -p 8888:8888 -v ${pwd}:/app -it travca
+docker run --gpus all --shm-size=4gb -p 8888:8888 -v $(pwd):/app -it travca
 ```
 
 # Running the code

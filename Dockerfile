@@ -69,4 +69,4 @@ CMD ["bash", "-c", "source activate TrAVCA && jupyter lab --ip=0.0.0.0 --no-brow
 # docker build -t travca .
 
 # Run commmand:
-# docker run --gpus all --shm-size=4gb -p 8888:8888 -v ${pwd}:/app -it travca
+# docker run --gpus all --shm-size=4gb -p 8888:8888 -v $(pwd):/app -it travca
