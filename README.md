@@ -57,7 +57,7 @@ After this step, these 6 .txt files should be in the `TrAVCA/data/liris_accede/d
 ## Setting up AudioCLIP
 We use AudioCLIP (https://github.com/AndreyGuzhov/AudioCLIP/) as a pretrained model. The AudioCLIP weights are not included in this repository, and need to be downloaded manually.
 
-1. From the AudioCLIP assets folder (https://github.com/AndreyGuzhov/AudioCLIP/tree/master/assets), download the following files:
+1. From the AudioCLIP releases assets (https://github.com/AndreyGuzhov/AudioCLIP/releases), download the following files:
     - `AudioCLIP-Full-Training.pt`
     - `bpe_simple_vocab_16e6.txt.gz`
 2. Move both of these files into the `TrAVCA/pretrained_model/audio_clip/assets/` folder.
