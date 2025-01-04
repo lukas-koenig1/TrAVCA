@@ -125,10 +125,17 @@ def calculate_metrics(args, targets, prob, num_labels):
     if args.balance_classes == True:
         acc = metrics.balanced_accuracy_score(targets, y_pred)
 
-        valence_targets, arousal_targets = get_separate_labels(targets)
-        valence_y_pred, arousal_y_pred = get_separate_labels(y_pred)
-        valence_acc = metrics.balanced_accuracy_score(valence_targets, valence_y_pred)
-        arousal_acc = metrics.balanced_accuracy_score(arousal_targets, arousal_y_pred)
+        if args.predicted_modalities == 'combined':
+            valence_targets, arousal_targets = get_separate_labels(targets)
+            valence_y_pred, arousal_y_pred = get_separate_labels(y_pred)
+            valence_acc = metrics.balanced_accuracy_score(valence_targets, valence_y_pred)
+            arousal_acc = metrics.balanced_accuracy_score(arousal_targets, arousal_y_pred)
+        elif args.predicted_modalities == 'valence':
+            valence_acc = acc
+            arousal_acc = 0
+        elif args.predicted_modalities == 'arousal':
+            valence_acc = 0
+            arousal_acc = acc
 
         auc_ovr = metrics.roc_auc_score(targets, prob, labels=labels_list, multi_class='ovr', average='macro')
         auc_ovo = metrics.roc_auc_score(targets, prob, labels=labels_list, multi_class='ovo', average='macro')
@@ -141,10 +148,17 @@ def calculate_metrics(args, targets, prob, num_labels):
     else:
         acc = metrics.accuracy_score(targets, y_pred)
 
-        valence_targets, arousal_targets = get_separate_labels(targets)
-        valence_y_pred, arousal_y_pred = get_separate_labels(y_pred)
-        valence_acc = metrics.accuracy_score(valence_targets, valence_y_pred)
-        arousal_acc = metrics.accuracy_score(arousal_targets, arousal_y_pred)
+        if args.predicted_modalities == 'combined':
+            valence_targets, arousal_targets = get_separate_labels(targets)
+            valence_y_pred, arousal_y_pred = get_separate_labels(y_pred)
+            valence_acc = metrics.accuracy_score(valence_targets, valence_y_pred)
+            arousal_acc = metrics.accuracy_score(arousal_targets, arousal_y_pred)
+        elif args.predicted_modalities == 'valence':
+            valence_acc = acc
+            arousal_acc = 0
+        elif args.predicted_modalities == 'arousal':
+            valence_acc = 0
+            arousal_acc = acc
 
         auc_ovr = metrics.roc_auc_score(targets, prob, labels=labels_list, multi_class='ovr', average='micro')
         auc_ovo = 0 # ROC AUC is not supported for the micro average

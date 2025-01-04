@@ -41,18 +41,28 @@ def train(args, model, device):
         vision_processor = CLIPImageProcessor.from_pretrained(args.pretrained_vision_model)
 
     # Initialize dataset and dataloader
+    videos_path = f'data/liris_accede/preprocessed/videos/'
+    audios_path = f'data/liris_accede/preprocessed/audios/'
+    
+    if args.predicted_modalities == 'combined':
+        labels_path = f'data/liris_accede/preprocessed/labels/'
+    elif args.predicted_modalities == 'valence':
+        labels_path = f'data/liris_accede/preprocessed/labels_valence/'
+    elif args.predicted_modalities == 'arousal':
+        labels_path = f'data/liris_accede/preprocessed/labels_arousal/'
+
     train_data = LirisAccedeDataset(
         args, device,
-        f'data/liris_accede/preprocessed/videos/',
-        f'data/liris_accede/preprocessed/audios/',
-        f'data/liris_accede/preprocessed/labels/',
+        videos_path,
+        audios_path,
+        labels_path,
         f'data/liris_accede/preprocessed/data_splits/train_ids_{args.dataset}.pt'
         )
     val_data = LirisAccedeDataset(
         args, device,
-        f'data/liris_accede/preprocessed/videos/',
-        f'data/liris_accede/preprocessed/audios/',
-        f'data/liris_accede/preprocessed/labels/',
+        videos_path,
+        audios_path,
+        labels_path,
         f'data/liris_accede/preprocessed/data_splits/val_ids_{args.dataset}.pt'
     )
     train_loader = DataLoader(

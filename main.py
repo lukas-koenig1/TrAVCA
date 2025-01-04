@@ -36,8 +36,9 @@ def set_args():
     parser.add_argument('--num_train_epochs', default=25, type=int, help='number of epochs for training')
     parser.add_argument('--batch_size', default=16, type=int, help='batch size for training and testing')
     parser.add_argument('--num_heads_ca', default=8, type=int, help='number of heads for cross attention')
-    parser.add_argument('--label_number', default=9, type=int, help='Number of classes')
-    parser.add_argument('--num_frames', default=16, type=int, help='') # TODO
+    parser.add_argument('--predicted_modalities', default='combined', type=str, help='Choose between combined, valence, and arousal. If set to valence or arousal, --label_number needs to be set to 3.')
+    parser.add_argument('--label_number', default=9, type=int, help='Number of classes. Choose 9 for combined labels and 3 for separate labels.')
+    parser.add_argument('--num_frames', default=16, type=int, help='How many frames are used to represent each video') # TODO Maybe add comment to only use multiples of 2?
 
     ## experiment
     parser.add_argument('--seed', default=42, type=int, help='random seed')
@@ -125,6 +126,16 @@ def main():
 
     else:
         raise ValueError('Illegal argument for --model: ' + str(args.model))
+    
+    # Check values for predicted_modalities and label_number params
+    if args.predicted_modalities == 'combined':
+        if args.label_number != 9:
+            raise ValueError('label_number must be set to 9 when predicted_modalities is set to combined')
+    elif args.predicted_modalities in ['valence', 'arousal']:
+        if args.label_number != 3:
+            raise ValueError('label_number must be set to 3 when predicted_modalities is set to valence or arousal')
+    else:
+        raise ValueError('Illegal argument for --predicted_modalities: ' + str(args.predicted_modalities))
 
 
     model.to(device)
