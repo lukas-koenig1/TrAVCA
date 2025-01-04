@@ -76,12 +76,12 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
 
-    wandb_tags = ['final metrics', 'final testing']
+    wandb_tags = ['final metrics']
 
     if args.wandb_tag is not None:
         wandb_tags.append(args.wandb_tag)
     
-    wandb.init(project='ba', notes='final', tags=wandb_tags, config=vars(args))
+    wandb.init(project='travca-paper', notes='test', tags=wandb_tags, config=vars(args))
     wandb.watch_called = False
 
     ## define learning rate
