@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from tqdm import tqdm
-from utils.utils import calculate_metrics
+from utils.utils import adjust_num_frames, calculate_metrics
 
 def evaluate(args, model, device, criterion, dataloader, audio_processor=None, vision_processor=None, processor=None):
     model.eval()
@@ -17,7 +17,7 @@ def evaluate(args, model, device, criterion, dataloader, audio_processor=None, v
             if args.model in ['cross_attention', 'fusion_audioclip']:
                 videos, audios, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1)
                 video_inputs = processor.preprocess_images(frames).to(device, non_blocking=True)
 
                 audio_inputs = processor.preprocess_audio(audios).to(device, non_blocking=True)
@@ -27,7 +27,7 @@ def evaluate(args, model, device, criterion, dataloader, audio_processor=None, v
             elif args.model == 'fusion':
                 videos, audios, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1).to(device, non_blocking=True)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1).to(device, non_blocking=True)
 
                 audio_inputs = audio_processor(audios=audios, sampling_rate=48_000, return_tensors='pt').to(device)
                 video_inputs = vision_processor(images=frames, padding=True, truncation=True, return_tensors='pt').to(device)
@@ -42,7 +42,7 @@ def evaluate(args, model, device, criterion, dataloader, audio_processor=None, v
             elif args.model == 'vision':
                 videos, _, labels = batch
 
-                frames = torch.flatten(videos, start_dim=0, end_dim=1).to(device, non_blocking=True)
+                frames = torch.flatten(adjust_num_frames(videos, args.num_frames), start_dim=0, end_dim=1).to(device, non_blocking=True)
 
                 video_inputs = vision_processor(images=frames, padding=True, truncation=True, return_tensors='pt').to(device)
 
