@@ -174,10 +174,11 @@ def calculate_metrics(args, targets, prob, num_labels):
 
 
 def adjust_num_frames(frames, num_frames):
+    # Shape of frames is (batch_size, num_preprocessed_frames, 224, 384, 3)
     if frames.shape[1] < num_frames:
-        raise ValueError("Number of preprocessed frames is less than argument \'num_frames\'")
+        raise ValueError("Number of preprocessed frames is less than parameter --num_frames")
     elif frames.shape[1] == num_frames:
         return frames
     else:
         frame_idxs = torch.round(torch.linspace(0, frames.shape[0] - 1, num_frames)).int()
-        return frames[frame_idxs]
+        return frames[:, frame_idxs]
