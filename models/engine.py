@@ -369,11 +369,22 @@ def test(args, model, device, custom_load_file=None):
 
     model.eval()
 
+    # Dataset and dataloader
+    videos_path = f'data/liris_accede/preprocessed/videos/'
+    audios_path = f'data/liris_accede/preprocessed/audios/'
+    
+    if args.predicted_modalities == 'combined':
+        labels_path = f'data/liris_accede/preprocessed/labels/'
+    elif args.predicted_modalities == 'valence':
+        labels_path = f'data/liris_accede/preprocessed/labels_valence/'
+    elif args.predicted_modalities == 'arousal':
+        labels_path = f'data/liris_accede/preprocessed/labels_arousal/'
+
     test_data = LirisAccedeDataset(
         args, device,
-        f'data/liris_accede/preprocessed/videos/',
-        f'data/liris_accede/preprocessed/audios/',
-        f'data/liris_accede/preprocessed/labels/',
+        videos_path,
+        audios_path,
+        labels_path,
         f'data/liris_accede/preprocessed/data_splits/test_ids_{args.dataset}.pt'
     )
     test_loader = DataLoader(test_data, batch_size=args.batch_size, collate_fn=LirisAccedeDataset.collate_func, shuffle=False, num_workers=args.num_workers, pin_memory=True)
