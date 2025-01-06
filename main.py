@@ -76,7 +76,7 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
 
-    wandb_tags = ['final metrics']
+    wandb_tags = ['final metrics', 'testing']
 
     if args.wandb_tag is not None:
         wandb_tags.append(args.wandb_tag)
