@@ -61,7 +61,7 @@ def evaluate(args, model, device, criterion, dataloader, audio_processor=None, v
                     pred = model(audio_inputs)
                 elif args.model == 'vision':
                     pred = model(video_inputs, batch_length)
-                prob.extend(torch.nn.functional.softmax(pred, dim=-1).detach().cpu())
+                prob.extend(torch.nn.functional.softmax(pred.float(), dim=-1).detach().cpu())
 
                 loss = criterion(pred, target)
                 running_loss += loss.item()
