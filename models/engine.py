@@ -227,9 +227,12 @@ def train(args, model, device):
                 # Log step in epoch
                 pseudo_epoch = i_epoch + (step / len(train_loader) - 1)
                 wandb.log({'epoch': pseudo_epoch})
-                print('Logging pseudo epoch: ' + str(pseudo_epoch))
+                print('Logging pseudo epoch: ' + str(pseudo_epoch)) # TODO: Remove
 
-                print('Validating in step: ' + str(step))
+                print('Validating in step: ' + str(step)) # TODO: Remove
+
+                wandb.log({'log/learning_rate': scheduler.get_lr()})
+
                 # Validate
                 if args.model in ['cross_attention', 'fusion_audioclip']:
                     validation_acc = validate(args, model, device, val_data, processor=processor)

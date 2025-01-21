@@ -76,12 +76,12 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
 
-    wandb_tags = ['final metrics', 'testing']
+    wandb_tags = ['final metrics', 'final setup']
 
     if args.wandb_tag is not None:
         wandb_tags.append(args.wandb_tag)
     
-    wandb.init(project='travca-paper', notes='test', tags=wandb_tags, config=vars(args))
+    wandb.init(project='travca-paper', notes='', tags=wandb_tags, config=vars(args))
     wandb.watch_called = False
 
     ## define learning rate
@@ -142,6 +142,7 @@ def main():
     wandb.watch(model, log='all')
 
     wandb.define_metric('epoch', hidden=True)
+    wandb.define_metric('log/learning_rate', step_metric='epoch')
 
     for set in ['train', 'val', 'test']:
         wandb.define_metric(f'{set}/loss', step_metric='epoch')
