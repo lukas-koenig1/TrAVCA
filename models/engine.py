@@ -120,12 +120,17 @@ def train(args, model, device):
 
     max_accuracy = 0.
 
+    # Step numbers at which to validate every epoch
+    vals_per_epoch = 5
+    val_points = np.linspace(0, (len(train_loader) - 1), num=(vals_per_epoch + 1)).round().astype('int')
+    val_points = np.delete(val_points, 0) # Remove val point in first step
+    print(val_points)
+
     # Initialize early stopping
-    early_stopping = EarlyStopping(patience=3, min_delta=0.01, maximize=True)
+    patience_epochs = 3
+    early_stopping = EarlyStopping(patience=(patience_epochs * vals_per_epoch), min_delta=0.01, maximize=True)
 
     for i_epoch in tqdm(range(0, int(args.num_train_epochs)), desc='epoch', total=args.num_train_epochs, position=0, leave=True, disable=False):
-        wandb.log({'epoch': i_epoch})
-
         model.train()
 
         prob = []
@@ -217,6 +222,45 @@ def train(args, model, device):
 
             running_loss += loss.item()
 
+            # Check if validation needs to be performed
+            if step in val_points:
+                # Log step in epoch
+                pseudo_epoch = i_epoch + (step / len(train_loader) - 1)
+                wandb.log({'epoch': pseudo_epoch})
+                print('Logging pseudo epoch: ' + str(pseudo_epoch))
+
+                print('Validating in step: ' + str(step))
+                # Validate
+                if args.model in ['cross_attention', 'fusion_audioclip']:
+                    validation_acc = validate(args, model, device, val_data, processor=processor)
+                elif args.model == 'fusion':
+                    validation_acc = validate(args, model, device, val_data, audio_processor=audio_processor, vision_processor=vision_processor)
+                elif args.model == 'audio':
+                    validation_acc = validate(args, model, device, val_data, audio_processor=audio_processor)
+                elif args.model == 'vision':
+                    validation_acc = validate(args, model, device, val_data, vision_processor=vision_processor)
+
+                ## save best model
+                if validation_acc > max_accuracy:
+                    max_accuracy = validation_acc
+
+                    if not os.path.exists(args.model_output_directory):
+                        os.mkdir(args.model_output_directory)
+
+                    checkpoint_file = f'checkpoint_{args.model}_{args.seed}_1lay.pth'
+
+                    dict_to_save = {
+                        'model': model.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'args': args
+                    }
+
+                    output_dir = os.path.join(args.model_output_directory, checkpoint_file)
+                    torch.save(dict_to_save, output_dir)
+
+                if early_stopping.early_stop(validation_acc):
+                    break
+
         ## stats
         epoch_loss = running_loss / len(train_loader)
 
@@ -239,37 +283,6 @@ def train(args, model, device):
                 f'train/rec': recall, 
                 f'train/cm': cm})
         logging.info('i_epoch is {}, train_loss is {}, train_acc is {}, train_f1 is {}, train_auc_ovr is {}, train_auc_ovo is {}, train_pre is {}, train_rec is {}'.format(i_epoch, epoch_loss, acc, f1, auc_ovr, auc_ovo, precision, recall))
-
-        ## validation results
-        if args.model in ['cross_attention', 'fusion_audioclip']:
-            validation_acc = validate(args, model, device, val_data, processor=processor)
-        elif args.model == 'fusion':
-            validation_acc = validate(args, model, device, val_data, audio_processor=audio_processor, vision_processor=vision_processor)
-        elif args.model == 'audio':
-            validation_acc = validate(args, model, device, val_data, audio_processor=audio_processor)
-        elif args.model == 'vision':
-            validation_acc = validate(args, model, device, val_data, vision_processor=vision_processor)
-
-        ## save best model
-        if validation_acc > max_accuracy:
-            max_accuracy = validation_acc
-
-            if not os.path.exists(args.model_output_directory):
-                os.mkdir(args.model_output_directory)
-
-            checkpoint_file = f'checkpoint_{args.model}_{args.seed}_1lay.pth'
-
-            dict_to_save = {
-                'model': model.state_dict(),
-                'optimizer': optimizer.state_dict(),
-                'args': args
-            }
-
-            output_dir = os.path.join(args.model_output_directory, checkpoint_file)
-            torch.save(dict_to_save, output_dir)
-
-        if early_stopping.early_stop(validation_acc):
-            break
 
     logger.info('Train done')
 
