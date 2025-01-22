@@ -121,7 +121,7 @@ def train(args, model, device):
     max_accuracy = 0.
 
     # Step numbers at which to validate every epoch
-    vals_per_epoch = 5
+    vals_per_epoch = args.vals_per_epoch
     val_points = np.linspace(0, (len(train_loader) - 1), num=(vals_per_epoch + 1)).round().astype('int')
     val_points = np.delete(val_points, 0) # Remove val point in first step
     print(val_points)
@@ -225,13 +225,15 @@ def train(args, model, device):
             # Check if validation needs to be performed
             if step in val_points:
                 # Log step in epoch
-                pseudo_epoch = i_epoch + (step / len(train_loader) - 1)
+                pseudo_epoch = i_epoch + (step / (len(train_loader) - 1))
                 wandb.log({'epoch': pseudo_epoch})
-                print('Logging pseudo epoch: ' + str(pseudo_epoch)) # TODO: Remove
+                # print('Logging pseudo epoch: ' + str(pseudo_epoch)) # TODO: Remove
 
-                print('Validating in step: ' + str(step)) # TODO: Remove
+                # print('Validating in step: ' + str(step)) # TODO: Remove
 
-                wandb.log({'log/learning_rate': scheduler.get_lr()})
+                # print('get_lr:' + str(scheduler.get_lr())) # TODO: Remove
+                # print('get_last_lr:' + str(scheduler.get_last_lr())) # TODO: Remove
+                wandb.log({'log/learning_rate': scheduler.get_last_lr()[0]})
 
                 # Validate
                 if args.model in ['cross_attention', 'fusion_audioclip']:
