@@ -28,6 +28,7 @@ def set_args():
     parser.add_argument('--custom_loss_ce_factor', default=1.0, type=float, help='Factor for the cross entropy part of the custom loss function. Only applicable if you are using the custom loss function.')
     parser.add_argument('--custom_loss_l2_factor', default=1.0, type=float, help='Factor for the MSE part of the custom loss function. Only applicable if you are using the custom loss function.')
     parser.add_argument('--balance_classes', default=False, type=bool, help='Choose True to optimize the model and calculate metrics per-class, choose False to do so globally, without balancing classes.')
+    parser.add_argument('--vals_per_epoch', default=1, type=int, help='How many times to perform validation during one training epoch')
 
     ## model
     parser.add_argument('--pretrained_vision_model', default="openai/clip-vit-base-patch32", type=str, help="source for pretrained vision model")
