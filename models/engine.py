@@ -263,8 +263,9 @@ def train(args, model, device):
                     output_dir = os.path.join(args.model_output_directory, checkpoint_file)
                     torch.save(dict_to_save, output_dir)
 
-                if early_stopping.early_stop(validation_acc):
-                    break
+            # Check if training should be stopped
+            if early_stopping.early_stop(validation_acc):
+                break
 
         ## stats
         epoch_loss = running_loss / len(train_loader)
